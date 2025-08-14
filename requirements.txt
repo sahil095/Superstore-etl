@@ -1,0 +1,12 @@
+pandas
+numpy
+matplotlib
+seaborn
+plotly
+dash
+duckdb
+boto3          # S3 (optional)
+azure-storage-blob  # Azure (optional)
+google-cloud-storage  # GCS (optional)
+kaggle       # Kaggle (optional)
+python-dotenv # if you want .env handling (optional)
