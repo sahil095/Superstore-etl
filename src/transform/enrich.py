@@ -1,7 +1,7 @@
 import pandas as pd
 from ..utils.dates import to_datetime, add_order_month
 
-def add_enriched_features(df: pd.DataFrame) -> pd.DataFrame:
+def add_enriched_fields(df: pd.DataFrame) -> pd.DataFrame:
     # parse dates
     df = to_datetime(df, ['Order Date', 'Ship Date'])
 

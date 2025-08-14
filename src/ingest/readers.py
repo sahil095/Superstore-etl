@@ -6,7 +6,7 @@ from ..utils.io import read_csv
 
 # 1) Local CSV (default)
 def read_local_csv(path):
-    return read_csv(path)
+    return read_csv(path, encoding='latin')
 
 # 2) AWS S3 (commented credentials usage)
 # Requires boto3, AWS creds in env (AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_DEFAULT_REGION)
