@@ -106,19 +106,19 @@ Place your SuperStore dataset in:
 data/raw/superstore.csv
 ```
 Cloud ingestion examples (commented in ingestion.py):
-# From AWS S3
+### From AWS S3
 ```bash
 s3_client.download_file('bucket-name', 'path/to/file.csv', 'data/raw/superstore.csv')
 ```
-# From Azure Blob Storage
+### From Azure Blob Storage
 ```bash
 blob_client.download_blob().readinto(open('data/raw/superstore.csv', 'wb'))
 ```
-# From Google Cloud Storage
+### From Google Cloud Storage
 ```bash
 bucket.blob('path/to/file.csv').download_to_filename('data/raw/superstore.csv')
 ```
-# From Kaggle
+### From Kaggle
 ```bash
 !kaggle datasets download -d <dataset-identifier> -p data/raw --unzip
 ```
@@ -135,19 +135,14 @@ python -m src.main --run dash
 ```
 📊 Dashboard Preview
 
-KPIs – Total Sales, Profit, Orders
-
-Filters – Date, Region, Category, Segment
+- KPIs – Total Sales, Profit, Orders
+- Filters – Date, Region, Category, Segment
 
 Charts:
-
-Monthly Sales & Profit Trend
-
-Sales by Category
-
-Region × Category Heatmap
-
-Top Products by Sales
+- Monthly Sales & Profit Trend
+- Sales by Category
+- Region × Category Heatmap
+- Top Products by Sales
 
 Responsive Design – Works on desktop & tablet
 
@@ -159,20 +154,16 @@ python -m src.main --run outliers
 ```
 
 Plots are stored in:
-
+```bash
 plots/outliers/
+```
 
-
-📜 License
-
-This project is licensed under the MIT License – see the LICENSE file for details.
-
-🤝 Contributing
+### **🤝 Contributing**
 
 Pull requests are welcome!
 For major changes, please open an issue first to discuss what you would like to change.
 
-📧 Contact
+### **📧 Contact**
 
 GitHub: https://github.com/sahil095
 
