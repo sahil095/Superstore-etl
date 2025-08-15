@@ -29,7 +29,7 @@ This enables **data-driven decision-making** for sales, marketing, and operation
 ---
 
 ## **📂 Project Structure**
-
+```
 superstore_etl/
 ├─ data/
 │  ├─ raw/                     # Put raw superstore.csv here (or use cloud ingestion)
@@ -58,7 +58,7 @@ superstore_etl/
 │     └─ dashboard.py          # Plotly Dash single-page app
 ├─ requirements.txt
 └─ README.md
-
+```
 
 ---
 
@@ -96,39 +96,43 @@ source .venv/bin/activate  # For Linux/Mac
 
 # Install dependencies
 pip install -r requirements.txt
-
+```
 
 📥 Data Ingestion
 Local CSV (default)
 
 Place your SuperStore dataset in:
-
+```bash
 data/raw/superstore.csv
-
+```
 Cloud ingestion examples (commented in ingestion.py):
 # From AWS S3
+```bash
 s3_client.download_file('bucket-name', 'path/to/file.csv', 'data/raw/superstore.csv')
-
+```
 # From Azure Blob Storage
+```bash
 blob_client.download_blob().readinto(open('data/raw/superstore.csv', 'wb'))
-
+```
 # From Google Cloud Storage
+```bash
 bucket.blob('path/to/file.csv').download_to_filename('data/raw/superstore.csv')
-
+```
 # From Kaggle
+```bash
 !kaggle datasets download -d <dataset-identifier> -p data/raw --unzip
-
+```
 ▶ Running the Pipeline
 
 Run the ETL process:
-
+```bash
 python -m src.main --run etl
-
+```
 
 Run the dashboard:
-
+```bash
 python -m src.main --run dash
-
+```
 📊 Dashboard Preview
 
 KPIs – Total Sales, Profit, Orders
@@ -150,9 +154,9 @@ Responsive Design – Works on desktop & tablet
 📈 Outlier Detection
 
 Generate and save outlier plots:
-
+```bash
 python -m src.main --run outliers
-
+```
 
 Plots are stored in:
 
