@@ -180,7 +180,7 @@ def make_app(curated_dir: Path):
 
         # Top products
         top = f.groupby('Product Name').agg(Profit=('Profit','sum')).reset_index().sort_values('Profit', ascending=False).head(10)
-        fig_top = px.bar(top, x='Profit', y='Product Name', orientation='h', title='Top 10 Products by Profit')
+        fig_top = px.bar(top.sort_values('Profit', ascending=True), x='Profit', y='Product Name', orientation = 'h', title='Top 10 Products by Profit')
 
         return k1, k2, k3, k4, fig_ts, fig_bar, fig_heat, fig_top
     
