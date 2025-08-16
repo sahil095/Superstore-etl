@@ -1,25 +1,96 @@
+import numpy as np
 import pandas as pd
-from dash import Dash, dcc, html, Input, Output
-import plotly.express as px
+import datetime as dt
 from pathlib import Path
+import plotly.express as px
+import plotly.graph_objects as go
 from dash.exceptions import PreventUpdate
+from dash import Dash, dcc, html, Input, Output, State
 
+# ---------- Theming ----------
+# Global Plotly defaults
+px.defaults.template = "plotly_white"
+COLORWAY = ["#2F67D8", "#00A38C", "#F39C12", "#8E44AD", "#16A085", "#D35400", "#2C3E50"]
+
+
+# ---------- Data Loading ----------
 # Load curated CSVs for the app (lightweight for demo)
-
 def load_curated(curated_dir: Path):
     fact = pd.read_csv(curated_dir / 'fact_orders.csv', parse_dates=['Order Date','Ship Date','Order Month'])
     monthly = pd.read_csv(curated_dir / 'mart_orders_monthly.csv', parse_dates=['Order Month'])
     return fact, monthly
 
+
+# ---------- Helpers ----------
+def apply_filters(df, start, end, regions, cats, segs):
+        if start is None or end is None:
+            # Inputs not ready yet
+            raise PreventUpdate
+
+        # Normalize list inputs
+        regions = regions or []
+        cats = cats or []
+        segs = segs or []
+
+        try:
+            start_dt = pd.to_datetime(start)
+            end_dt = pd.to_datetime(end)
+        except Exception:
+            # Bad date values, skip update
+            raise PreventUpdate
+
+        m = (df['Order Date'] >= start_dt) & (df['Order Date'] <= end_dt)
+        if regions:
+            m &= df['Region'].isin(regions)
+        if cats:
+            m &= df['Category'].isin(cats)
+        if segs:
+            m &= df['Segment'].isin(segs)
+
+        filtered = df.loc[m].copy()
+        return filtered
+
+
+def _no_dim_filters(regions, cats, segs):
+    return (not regions) and (not cats) and (not segs)
+
+
+def empty_fig(title):
+    fig = px.scatter(title=title)
+    fig.update_layout(
+        xaxis={"visible": False}, yaxis={"visible": False}, margin=dict(l=10, r=10, t=40, b=10)
+    )
+    return fig
+
+
+def kpi_card(title, value, delta=None, delta_positive=True, _id=None):
+    delta_txt = ""
+    delta_color = "#00A38C" if delta_positive else "#D35400"
+    if delta is not None:
+        sign = "+" if delta >= 0 else ""
+        delta_txt = f"{sign}{delta:.1f}%"
+
+    return html.Div(
+        [
+            html.Div(title, className="kpi-title"),
+            html.Div(value, className="kpi-value", id=_id),
+            html.Div(delta_txt, className="kpi-delta", style={"color": delta_color}),
+        ],
+        className="kpi-card",
+    )
+
+
+def compute_period_delta(curr, prev):
+    if prev == 0 or prev is None or np.isnan(prev):
+        return None
+    return ((curr - prev) / prev) * 100.0
+
+
+# ---------- App ----------
 def make_app(curated_dir: Path):
     fact, monthly = load_curated(curated_dir)
 
     app = Dash(__name__, suppress_callback_exceptions=True)
-
-    # Use monthly pre-aggregated data only when no dimensional filters are applied
-    def _no_dim_filters(regions, cats, segs):
-        return (not regions) and (not cats) and (not segs)
-
 
     regions = sorted(fact['Region'].dropna().unique())
     categories = sorted(fact['Category'].dropna().unique())
@@ -65,34 +136,6 @@ def make_app(curated_dir: Path):
         dcc.Graph(id = 'top-products')
     ], style={'padding': '12px'})
     
-
-    def apply_filters(df, start, end, regions, cats, segs):
-        if start is None or end is None:
-            # Inputs not ready yet
-            raise PreventUpdate
-
-        # Normalize list inputs
-        regions = regions or []
-        cats = cats or []
-        segs = segs or []
-
-        try:
-            start_dt = pd.to_datetime(start)
-            end_dt = pd.to_datetime(end)
-        except Exception:
-            # Bad date values, skip update
-            raise PreventUpdate
-
-        m = (df['Order Date'] >= start_dt) & (df['Order Date'] <= end_dt)
-        if regions:
-            m &= df['Region'].isin(regions)
-        if cats:
-            m &= df['Category'].isin(cats)
-        if segs:
-            m &= df['Segment'].isin(segs)
-
-        filtered = df.loc[m].copy()
-        return filtered
 
     
     @app.callback(
